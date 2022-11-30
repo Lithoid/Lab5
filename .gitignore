@@ -10,11 +10,6 @@
 
 # production
 /build
-/src/components/Lab2
-/src/components/Lab3
-/src/components/Lab4
-/src/components/Lab1.js
-
 
 # misc
 .DS_Store
