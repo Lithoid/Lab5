@@ -4,7 +4,8 @@ import Card from "react-bootstrap/Card";
 import List from "react-virtualized/dist/commonjs/List";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
+import { Button, Form, ListGroup } from "react-bootstrap";
+import Product from "./Product";
 
 import "./Main.css";
 
@@ -19,7 +20,6 @@ function Main() {
   }, []);
 
   const fetchPhotos = async () => {
-    let prods;
     fetch("https://fakestoreapi.com/products")
       .then((res) => res.json())
       .then((json) => setProducts(json));
@@ -28,33 +28,42 @@ function Main() {
     //setProducts(products);
   };
 
+  function dynamicSort(property) {
+    var sortOrder = 1;
+    if (property[0] === "-") {
+      sortOrder = -1;
+      property = property.substr(1);
+    }
+    return function (a, b) {
+      var result =
+        a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+      return result * sortOrder;
+    };
+  }
+
+  const filter = (event) => {
+    console.log();
+
+    setProducts([...products].sort(dynamicSort(event.target.value)));
+  
+  };
+
   return (
     <Container>
       <Row>
-        <Col sm={2}>sm=2</Col>
+        <Col sm={2}>
+          <select name="select" onChange={filter}>
+            <option value="price">Price</option>
+            <option value="title">Name</option>
+          </select>
+        </Col>
 
         <Col sm={10}>
           <ul className="hr">
-            {products &&
+            {console.log(products)}
+            {products && 
               products.map((product) => {
-                return (
-                  <li>
-                    <Card style={{ width: "18rem" }}>
-                      <Card.Img variant="top" src={product.image} />
-                      <Card.Body>
-                        <Card.Title>{product.title}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">
-                          {product.category}
-                        </Card.Subtitle>
-                        <Card.Text>
-                          {product.description.slice(0, 70)}
-                        </Card.Text>
-                        <Card.Link href="#">Favourite</Card.Link>
-                        <Card.Link href="#">Another Link</Card.Link>
-                      </Card.Body>
-                    </Card>
-                  </li>
-                );
+                return <Product product={product}   />;
               })}
           </ul>
         </Col>
